@@ -44,38 +44,38 @@
 
 +(BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)fileURL {
     
-    // First ensure the file actually exists
-    if (![[NSFileManager defaultManager] fileExistsAtPath:[fileURL path]]) {
-        NSLog(@"File %@ doesn't exist!",[fileURL path]);
-        return NO;
-    }
-    
-    // Determine the iOS version to choose correct skipBackup method
-    NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
-    
-    if ([currSysVer isEqualToString:@"5.0.1"]) {
-        const char* filePath = [[fileURL path] fileSystemRepresentation];
-        const char* attrName = "com.apple.MobileBackup";
-        u_int8_t attrValue = 1;
-        int result = setxattr(filePath, attrName, &attrValue, sizeof(attrValue), 0, 0);
-        NSLog(@"Excluded '%@' from backup",fileURL);
-        return result == 0;
-    }
-    else if (&NSURLIsExcludedFromBackupKey) {
-        NSError *error = nil;
-        BOOL result = [fileURL setResourceValue:[NSNumber numberWithBool:YES] forKey:NSURLIsExcludedFromBackupKey error:&error];
-        if (result == NO) {
-            NSLog(@"Error excluding '%@' from backup. Error: %@",fileURL, error);
-            return NO;
-        }
-        else { // Succeeded
-            NSLog(@"Excluded '%@' from backup",fileURL);
-            return YES;
-        }
-    } else {
+//    // First ensure the file actually exists
+//    if (![[NSFileManager defaultManager] fileExistsAtPath:[fileURL path]]) {
+//        NSLog(@"File %@ doesn't exist!",[fileURL path]);
+//        return NO;
+//    }
+//    
+//    // Determine the iOS version to choose correct skipBackup method
+//    NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
+//    
+//    if ([currSysVer isEqualToString:@"5.0.1"]) {
+//        const char* filePath = [[fileURL path] fileSystemRepresentation];
+//        const char* attrName = "com.apple.MobileBackup";
+//        u_int8_t attrValue = 1;
+//        int result = setxattr(filePath, attrName, &attrValue, sizeof(attrValue), 0, 0);
+//        NSLog(@"Excluded '%@' from backup",fileURL);
+//        return result == 0;
+//    }
+//    else if (&NSURLIsExcludedFromBackupKey) {
+//        NSError *error = nil;
+//        BOOL result = [fileURL setResourceValue:[NSNumber numberWithBool:YES] forKey:NSURLIsExcludedFromBackupKey error:&error];
+//        if (result == NO) {
+//            NSLog(@"Error excluding '%@' from backup. Error: %@",fileURL, error);
+//            return NO;
+//        }
+//        else { // Succeeded
+//            NSLog(@"Excluded '%@' from backup",fileURL);
+//            return YES;
+//        }
+//    } else {
         // iOS version is below 5.0, no need to do anything
         return YES;
-    }
+//    }
 }
 
 + (UIImage*)screenshot
